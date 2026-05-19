@@ -20,10 +20,10 @@ func (s *Service) AddNote(title, content string, tags []string) (models.Note, er
 	}
 
 	note := models.Note{
-		Title:     title,
-		Content:   content,
-		Tags:      tags,
-		CreatedAt: time.Now(),
+		Title:   title,
+		Content: content,
+		Tags:    tags,
+		Date:    time.Now(),
 	}
 
 	savedNote := s.store.Save(note)
@@ -46,4 +46,8 @@ func (s *Service) GetNotesByTag(tag string) []models.Note {
 		}
 	}
 	return filtered
+}
+
+func (s *Service) DeleteNote(id int) error {
+	return s.store.DeleteByID(id)
 }
