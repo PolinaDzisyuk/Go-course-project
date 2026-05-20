@@ -8,7 +8,7 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
-	store := notes.NewStore()
+	store := notes.NewStore("notes.json")
 	service := notes.NewService(store)
 	ui := notes.NewCLI(service)
 	fmt.Println("Приложение запущено.")

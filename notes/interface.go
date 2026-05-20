@@ -99,8 +99,8 @@ func (c *CLI) addNote(scanner *bufio.Scanner) {
 		fmt.Printf("Ошибка при добавлении: %v\n", err)
 		return
 	}
-
-	fmt.Printf("Успешно добавлено! Создана заметка с ID: %d\n", note.ID)
+	fmt.Println("Новая заметка!")
+	fmt.Printf("Создана заметка с ID: %d\n", note.ID)
 }
 
 func (c *CLI) deleteNote(scanner *bufio.Scanner) {
