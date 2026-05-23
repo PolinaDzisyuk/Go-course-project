@@ -78,3 +78,20 @@ func (s *Store) DeleteByID(id int) error {
 	}
 	return errors.New("Err: Заметка не найдена")
 }
+
+func (s *Store) Update(id int, updatedNote models.Note) error {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	for i, note := range s.notes {
+		if note.ID == id {
+			updatedNote.ID = note.ID
+			updatedNote.Date = note.Date
+
+			s.notes[i] = updatedNote
+			_ = s.saveToFile()
+			return nil
+		}
+	}
+	return errors.New("Err: Заметка для обновления не найдена")
+}

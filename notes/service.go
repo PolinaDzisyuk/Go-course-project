@@ -51,3 +51,15 @@ func (s *Service) GetNotesByTag(tag string) []models.Note {
 func (s *Service) DeleteNote(id int) error {
 	return s.store.DeleteByID(id)
 }
+
+func (s *Service) UpdateNote(id int, title, content string, tags []string) error {
+	if title == "" {
+		return errors.New("Заголовок не может быть пустым")
+	}
+	updatedNote := models.Note{
+		Title:   title,
+		Content: content,
+		Tags:    tags,
+	}
+	return s.store.Update(id, updatedNote)
+}
