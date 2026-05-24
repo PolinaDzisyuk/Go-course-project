@@ -138,20 +138,35 @@ func (c *CLI) editNote(scanner *bufio.Scanner) {
 		return
 	}
 
-	fmt.Print("Введите новый заголовок заметки: ")
+	oldNote, err := c.service.GetNoteByID(id)
+	if err != nil {
+		fmt.Printf("Ошибка: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Заголовок [%s] (нажмите Enter, чтобы оставить без изменений): ", oldNote.Title)
 	scanner.Scan()
 	title := strings.TrimSpace(scanner.Text())
+	if title == "" {
+		title = oldNote.Title
+	}
 
-	fmt.Print("Введите новый текст заметки: ")
+	fmt.Printf("Текст [%s] (нажмите Enter, чтобы оставить без изменений): ", oldNote.Content)
 	scanner.Scan()
 	content := strings.TrimSpace(scanner.Text())
+	if content == "" {
+		content = oldNote.Content
+	}
 
-	fmt.Print("Введите новые теги через запятую: ")
+	oldTagsStr := strings.Join(oldNote.Tags, ", ")
+	fmt.Printf("Теги [%s] (нажмите Enter, чтобы оставить без изменений): ", oldTagsStr)
 	scanner.Scan()
 	tagsInput := strings.TrimSpace(scanner.Text())
 
 	var tags []string
-	if tagsInput != "" {
+	if tagsInput == "" {
+		tags = oldNote.Tags
+	} else {
 		parts := strings.Split(tagsInput, ",")
 		for _, p := range parts {
 			tags = append(tags, strings.TrimSpace(p))
@@ -163,5 +178,5 @@ func (c *CLI) editNote(scanner *bufio.Scanner) {
 		fmt.Printf("Ошибка при редактировании: %v\n", err)
 		return
 	}
-	fmt.Println("Заметка успешно обновлена!!")
+	fmt.Println("Заметка успешно обновлена!")
 }

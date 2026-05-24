@@ -95,3 +95,15 @@ func (s *Store) Update(id int, updatedNote models.Note) error {
 	}
 	return errors.New("Err: Заметка для обновления не найдена")
 }
+
+func (s *Store) FindByID(id int) (models.Note, error) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	for _, note := range s.notes {
+		if note.ID == id {
+			return note, nil
+		}
+	}
+	return models.Note{}, errors.New("Err: заметка не найдена")
+}

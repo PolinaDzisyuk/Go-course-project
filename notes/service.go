@@ -63,3 +63,7 @@ func (s *Service) UpdateNote(id int, title, content string, tags []string) error
 	}
 	return s.store.Update(id, updatedNote)
 }
+
+func (s *Service) GetNoteByID(id int) (models.Note, error) {
+	return s.store.FindByID(id)
+}
