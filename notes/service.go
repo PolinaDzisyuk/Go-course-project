@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+var ErrEmptyTitle = errors.New("заголовок не может быть пустым")
+var ErrNoteNotFound = errors.New("заметка не найдена")
+
 type Service struct {
 	store *Store
 }
@@ -16,7 +19,7 @@ func NewService(store *Store) *Service {
 
 func (s *Service) AddNote(title, content string, tags []string) (models.Note, error) {
 	if title == "" {
-		return models.Note{}, errors.New("Заголовок не может быть пустым")
+		return models.Note{}, ErrEmptyTitle
 	}
 
 	note := models.Note{
@@ -49,21 +52,34 @@ func (s *Service) GetNotesByTag(tag string) []models.Note {
 }
 
 func (s *Service) DeleteNote(id int) error {
-	return s.store.DeleteByID(id)
+	err := s.store.DeleteByID(id)
+	if err != nil {
+		return errors.Join(ErrNoteNotFound, err)
+	}
+	return nil
 }
 
 func (s *Service) UpdateNote(id int, title, content string, tags []string) error {
 	if title == "" {
-		return errors.New("Заголовок не может быть пустым")
+		return ErrEmptyTitle
 	}
 	updatedNote := models.Note{
 		Title:   title,
 		Content: content,
 		Tags:    tags,
 	}
-	return s.store.Update(id, updatedNote)
+	err := s.store.Update(id, updatedNote)
+	if err != nil {
+		return errors.Join(ErrNoteNotFound, err)
+	}
+	return nil
 }
 
 func (s *Service) GetNoteByID(id int) (models.Note, error) {
-	return s.store.FindByID(id)
+	note, err := s.store.FindByID(id)
+	if err != nil {
+		return models.Note{}, errors.Join(ErrNoteNotFound, err)
+	}
+	return note, nil
+
 }

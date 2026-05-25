@@ -9,22 +9,19 @@ import (
 )
 
 func main() {
-	helpFlag := flag.Bool("info", false, "Показать подробное пояснение к запуску проекта и архитектуре")
+	infoFlag := flag.Bool("info", false, "Показать подробное пояснение к запуску проекта и архитектуре")
+	helpFlag := flag.Bool("help", false, "Справочная информация по использованию")
 	StorageFile := flag.String("file", "notes.json", "Файл для хранения заметок")
-	flag.Usage = func() {
-		fmt.Println("<МЕНЕДЖЕР ЗАМЕТОК>\nинструкция по использованию")
-		fmt.Println("\nДоступные флаги:")
-		flag.PrintDefaults()
-		fmt.Println("\nПример запуска:")
-		fmt.Println("  go run ./app                  - Запуск приложения в интерактивном режиме")
-		fmt.Println("  go run ./app --info           - Вывод пояснений по архитектуре проекта")
-		fmt.Println("  go run ./app --help  	        - Показать это справочное окно")
-		fmt.Println("  go run ./app --file=file.json - Запуск с пользовательским файлом для хранения заметок")
-	}
+
 	flag.Parse()
-	if *helpFlag {
+	if *infoFlag {
 		printProjectInfo()
 		os.Exit(0)
+	}
+	if *helpFlag {
+		printProjectHELP()
+		os.Exit(0)
+
 	}
 
 	cfg := config.LoadConfig()
@@ -50,4 +47,15 @@ func printProjectInfo() {
 	fmt.Println("   + interface.go (CLI):   интерактивное консольное меню.")
 	fmt.Println("\nКоманды запуска из корня проекта:")
 	fmt.Println("   + go run ./app          - запуск приложения.")
+}
+
+func printProjectHELP() {
+	fmt.Println("<МЕНЕДЖЕР ЗАМЕТОК>\nинструкция по использованию")
+	fmt.Println("\nДоступные флаги:")
+	flag.PrintDefaults()
+	fmt.Println("\nПример запуска:")
+	fmt.Println("  go run ./app                  - Запуск приложения в интерактивном режиме")
+	fmt.Println("  go run ./app --info           - Вывод пояснений по архитектуре проекта")
+	fmt.Println("  go run ./app --help  	        - Показать это справочное окно")
+	fmt.Println("  go run ./app --file=file.json - Запуск с пользовательским файлом для хранения заметок")
 }
